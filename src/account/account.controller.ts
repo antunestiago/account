@@ -22,7 +22,6 @@ export class AccountController {
       const error = new PreconditionFailedException(errors, 'invalid_data');
       this.eventEmitter.emit('account_error', error);
       return error
-      // return errors; //this is just returned for tests purpose
     }
 
     return this.accountService //this is just returned for tests purpose
