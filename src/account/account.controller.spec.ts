@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountController } from './account.controller';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { HttpStatus } from "@nestjs/common";
 
 describe('AccountController', () => {
   let controller: AccountController;
@@ -40,7 +41,7 @@ describe('AccountController', () => {
       availableLimit: 1,
     });
 
-    expect(result[0].constraints.isNotEmpty).toBe('name should not be empty');
+    expect(result['status']).toBe(HttpStatus.PRECONDITION_FAILED);
   });
 
   it('should return handleInitializeAccountEvent to be success and return Account Payload', async () => {

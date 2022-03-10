@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Post, Res} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Post, Res } from "@nestjs/common";
 import { AppService } from './app.service';
 import {response} from "express";
 
@@ -16,7 +16,7 @@ export class AppController {
     return await this.appService
       .handlerEvents(eventMessage)
       .then((response) => {
-        res.status(201).send(response);
+        res.status(HttpStatus.CREATED).send();
       })
       .catch((err) => {
         res.status(err.status).send(err);
