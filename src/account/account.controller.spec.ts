@@ -83,6 +83,6 @@ describe('AccountController with error in service layer', () => {
       availableLimit: 1,
     });
 
-    expect(result).toBe(result);
+    expect(result['status']).toBe(HttpStatus.BAD_REQUEST);
   });
 });

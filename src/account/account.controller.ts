@@ -32,6 +32,7 @@ export class AccountController {
       })
       .catch((err) => {
         this.eventEmitter.emit('account_error', err);
+        return err //this is just returned for tests purpose
       });
   }
 
