@@ -1,9 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountService, AccountServiceImpl } from "./account.service";
-import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Account } from "./entities/account.entity";
 import { HttpStatus } from "@nestjs/common";
-import { response } from "express";
 
 describe('AccountService', () => {
   let service: AccountServiceImpl;
