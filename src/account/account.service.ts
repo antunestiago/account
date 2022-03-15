@@ -5,6 +5,7 @@ import { AccountRepository } from './account.repository';
 
 export interface AccountService {
   createAccount(createAccountDTO: CreateAccountDto): Promise<Account>;
+  getAccount(document: string): Account;
 }
 
 @Injectable()
@@ -27,4 +28,8 @@ export class AccountServiceImpl implements AccountService {
       reject(error);
     });
   }
+
+  getAccount(document: string): Account {
+    return this.accountRepository.findAccountByDocument(document);
+  };
 }

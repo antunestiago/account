@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { AccountRepository } from "../account/account.repository";
+import { AccountService } from "../account/account.service";
+import { TransactionRepository } from "./transaction.repository";
 
 
 export interface TransactionService {
@@ -9,9 +9,10 @@ export interface TransactionService {
 }
 
 @Injectable()
-export class TransactionImpl implements TransactionService {
+export class TransactionServiceImpl implements TransactionService {
   constructor(
-    @Inject('AccountRepository') private accountRepository: AccountRepository,
+    @Inject('AccountService') private accountService: AccountService,
+    @Inject('TransactionRepository') private transactionRepository: TransactionRepository,
   ) {}
 
   transferFunds(createTransactionDto: CreateTransactionDto): AccountAfterTransferFundsDto {
@@ -19,13 +20,22 @@ export class TransactionImpl implements TransactionService {
       throw new BadRequestException({});
     }
 
+    if(!this.isNewTransaction(createTransactionDto)) {
+      throw new BadRequestException({});
+    }
+
 
     return  new AccountAfterTransferFundsDto();
   }
 
-  private accountsExists(createTransactionDto: CreateTransactionDto) {
-    const sender = this.accountRepository.findAccountByDocument(createTransactionDto.senderDocument);
-    const receiver = this.accountRepository.findAccountByDocument(createTransactionDto.receiverDocument);
-    return sender && receiver;
+  private accountsExists(createTransactionDto: CreateTransactionDto): boolean {
+    const sender = this.accountService.getAccount(createTransactionDto.senderDocument);
+    const receiver = this.accountService.getAccount(createTransactionDto.receiverDocument);
+    return Boolean(sender && receiver);
+  }
+
+  private isNewTransaction(createTransactionDto: CreateTransactionDto) {
+    this.transactionRepository.getAllSenderTransactions(createTransactionDto.senderDocument)
+    return false;
   }
 }
