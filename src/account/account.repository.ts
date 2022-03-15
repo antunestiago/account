@@ -1,9 +1,11 @@
 import { Account } from './entities/account.entity';
 import { CreateAccountDto } from './dto/create-account.dto';
+import { BadRequestException, NotFoundException } from "@nestjs/common";
 
 export interface AccountRepository {
   create(createAccountDto: CreateAccountDto): Promise<Account>;
   findAccountByDocument(document: string): Account;
+  updateAccount(account: Account): Account;
 }
 
 export class AccountRepositoryImpl implements AccountRepository {
@@ -24,5 +26,21 @@ export class AccountRepositoryImpl implements AccountRepository {
     return this.accounts.find(
       (account: Account) => account.document === document,
     );
+  }
+
+  updateAccount(account: Account): Account {
+    let updatedAccount: Account = new Account();
+    this.accounts.forEach(acc => {
+      if (acc.document === account.document) {
+        acc.availableLimit = account.availableLimit;
+        updatedAccount = {...acc};
+      }
+    });
+
+    if (updatedAccount) {
+      return updatedAccount;
+    } else {
+      throw new NotFoundException({message: "Account not found."});
+    }
   }
 }
