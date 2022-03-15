@@ -1,15 +1,28 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TransactionService } from './transaction.service';
+import { TransactionService, TransactionServiceImpl } from "./transaction.service";
+import { BadRequestException } from "@nestjs/common";
+import { EventEmitter2 } from "@nestjs/event-emitter";
 
 describe('TransactionService', () => {
   let service: TransactionService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TransactionService],
-    }).compile();
+      providers: [
+        TransactionServiceImpl,
+      ],
+    }) .useMocker((token) => {
+      if (token === 'AccountService') {
+        return {};
+      }
 
-    service = module.get<TransactionService>(TransactionService);
+      if (token === 'TransactionRepository') {
+        return {};
+      }
+    })
+      .compile();
+
+    service = module.get<TransactionService>(TransactionServiceImpl);
   });
 
   it('should be defined', () => {
