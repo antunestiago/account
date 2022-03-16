@@ -4,6 +4,7 @@ import { AccountService } from "../account/account.service";
 import { TransactionRepository } from "./transaction.repository";
 import { DataValidationError } from "../../common/filters/operational-error.filter";
 import { Transaction } from "./entities/transaction.entity";
+import { ExceptionMessages } from "../../common/exception-messages.enum";
 
 
 export interface TransactionService {
@@ -21,13 +22,13 @@ export class TransactionServiceImpl implements TransactionService {
 
   transferFunds(createTransactionDto: CreateTransactionDto): TransactionsDto {
     if(!this.accountsExists(createTransactionDto)) {
-      throw new NotFoundException({message: "One or both accounts does not exists"})
+      throw new NotFoundException({message: ExceptionMessages.noAccountFound})
       // throw new DataValidationError(["one or both accounts does not exists"])
 
     }
 
     if(!this.isNewTransaction(createTransactionDto)) {
-      throw new BadRequestException({message:"Double transaction"});
+      throw new BadRequestException({message: ExceptionMessages.doubleTransaction});
     }
 
     const senderAccount = this.accountService.transferFundsBetweenAccounts(createTransactionDto.senderDocument,
