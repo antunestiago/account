@@ -24,7 +24,6 @@ export class TransactionServiceImpl implements TransactionService {
     if(!this.accountsExists(createTransactionDto)) {
       throw new NotFoundException({message: ExceptionMessages.noAccountFound})
       // throw new DataValidationError(["one or both accounts does not exists"])
-
     }
 
     if(!this.isNewTransaction(createTransactionDto)) {
@@ -60,6 +59,6 @@ export class TransactionServiceImpl implements TransactionService {
     if (!lastSenderTransaction) return true;
 
     const diff = createTransactionDto.datetime.getTime() - lastSenderTransaction.datetime.getTime();
-    return diff/1000 > this.TWO_MINUTES_IN_SECONDS;
+    return Math.abs(diff)/1000 > this.TWO_MINUTES_IN_SECONDS;
   }
 }

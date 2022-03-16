@@ -1,13 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionService, TransactionServiceImpl } from "./transaction.service";
 import { BadRequestException, HttpStatus } from "@nestjs/common";
-import { EventEmitter2 } from "@nestjs/event-emitter";
 import { Account } from "../account/entities/account.entity";
 import { Transaction } from "./entities/transaction.entity";
 import { CreateTransactionDto } from "./dto/create-transaction.dto";
 import { ExceptionMessages } from "../../common/exception-messages.enum";
 
-describe('TransactionService with one of accounts found', () => {
+describe('TransactionService with one of accounts not found', () => {
   const createTransactionDto = new CreateTransactionDto();
   createTransactionDto.senderDocument = '000.000.000-01';
   createTransactionDto.receiverDocument = '000.000.000-02';
@@ -55,13 +54,13 @@ describe('TransactionService with duplicated transaction', () => {
   createTransactionDto.senderDocument = '000.000.000-01';
   createTransactionDto.receiverDocument = '000.000.000-02';
   createTransactionDto.value = 100;
-  createTransactionDto.datetime = new Date();
+  createTransactionDto.datetime = new Date(2022, 2,15,11,30,48);
 
   const fakeTransaction = new Transaction();
   fakeTransaction.senderDocument = '000.000.000-01';
   fakeTransaction.receiverDocument = '000.000.000-02';
   fakeTransaction.availableLimit = 700;
-  fakeTransaction.datetime = new Date(2022, 3,15,11,30,0);
+  fakeTransaction.datetime = new Date(2022, 2,15,11,30,0);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
