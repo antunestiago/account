@@ -35,7 +35,7 @@ export class AccountServiceImpl implements AccountService {
     return this.accountRepository.findAccountByDocument(document);
   };
 
-  transferFundsBetweenAccounts(originAccountDoc: string, destinationAccountDoc: string, amount: number) {
+  transferFundsBetweenAccounts(originAccountDoc: string, destinationAccountDoc: string, amount: number): Account {
     const sender = {...this.accountRepository.findAccountByDocument(originAccountDoc)};
     const receiver = {...this.accountRepository.findAccountByDocument(destinationAccountDoc)};
 

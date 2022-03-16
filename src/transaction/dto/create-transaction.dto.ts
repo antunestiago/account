@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDate, IsDateString, IsNotEmpty } from "class-validator";
+import { IsDate, IsNotEmpty } from "class-validator";
 
 export class CreateTransactionDto {
   @IsNotEmpty()
