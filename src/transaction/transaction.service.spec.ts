@@ -26,7 +26,7 @@ describe('TransactionService with one of accounts not found', () => {
           getAccount: jest.fn().mockReturnValue(undefined)
         };
       }
-      if (token === 'TransactionRepository') {
+      if (token === 'TransactionDAO') {
         return {};
       }
     }).compile();
@@ -75,7 +75,7 @@ describe('TransactionService with duplicated transaction', () => {
         };
       }
 
-      if (token === 'TransactionRepository') {
+      if (token === 'TransactionDAO') {
         return {
           getLastSenderTransaction: jest.fn().mockReturnValue(fakeTransaction),
         };
