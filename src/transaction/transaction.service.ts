@@ -1,14 +1,13 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { AccountService } from "../account/account.service";
-import { TransactionRepository } from "./transaction.repository";
-import { DataValidationError } from "../../common/filters/operational-error.filter";
+import { TransactionDAO } from "./transaction.dao";
 import { Transaction } from "./entities/transaction.entity";
 import { ExceptionMessages } from "../../common/exception-messages.enum";
 
 
 export interface TransactionService {
-  transferFunds(createTransactionDto: CreateTransactionDto): TransactionsDto;
+  transferFunds(createTransactionDto: CreateTransactionDto): Promise<Transaction>;
 }
 
 @Injectable()
@@ -17,34 +16,34 @@ export class TransactionServiceImpl implements TransactionService {
 
   constructor(
     @Inject('AccountService') private accountService: AccountService,
-    @Inject('TransactionRepository') private transactionRepository: TransactionRepository,
+    @Inject('TransactionDAO') private transactionDAO: TransactionDAO,
   ) {}
 
-  transferFunds(createTransactionDto: CreateTransactionDto): TransactionsDto {
-    if(!this.accountsExists(createTransactionDto)) {
-      throw new NotFoundException({message: ExceptionMessages.noAccountFound})
+  async transferFunds(createTransactionDto: CreateTransactionDto): Promise<Transaction> {
+    if (!this.accountsExists(createTransactionDto)) {
+      throw new NotFoundException({ message: ExceptionMessages.noAccountFound })
       // throw new DataValidationError(["one or both accounts does not exists"])
     }
 
-    if(!this.isNewTransaction(createTransactionDto)) {
-      throw new BadRequestException({message: ExceptionMessages.doubleTransaction});
+    if (!await this.isNewTransaction(createTransactionDto)) {
+      throw new BadRequestException({ message: ExceptionMessages.doubleTransaction });
     }
 
     const senderAccount = this.accountService.transferFundsBetweenAccounts(createTransactionDto.senderDocument,
       createTransactionDto.receiverDocument,
       createTransactionDto.value);
 
-    return this.saveTransaction(createTransactionDto, senderAccount);
+    return await this.saveTransaction(createTransactionDto, senderAccount);
   }
 
-  private saveTransaction(createTransactionDto: CreateTransactionDto, senderAccount): Transaction {
+  private async saveTransaction(createTransactionDto: CreateTransactionDto, senderAccount): Promise<Transaction> {
     const transaction = new Transaction();
     transaction.senderDocument = createTransactionDto.senderDocument;
     transaction.receiverDocument = createTransactionDto.receiverDocument;
     transaction.availableLimit = senderAccount.availableLimit;
     transaction.datetime = createTransactionDto.datetime;
 
-    return this.transactionRepository.save(transaction);
+    return await this.transactionDAO.save(transaction);
   }
 
   private accountsExists(createTransactionDto: CreateTransactionDto): boolean {
@@ -53,12 +52,12 @@ export class TransactionServiceImpl implements TransactionService {
     return Boolean(sender && receiver);
   }
 
-  private isNewTransaction(createTransactionDto: CreateTransactionDto) {
-    const lastSenderTransaction = this.transactionRepository.getLastSenderTransaction(createTransactionDto.senderDocument)
+  private async isNewTransaction(createTransactionDto: CreateTransactionDto) {
+    const lastSenderTransaction = await this.transactionDAO.getLastSenderTransaction(createTransactionDto.senderDocument)
 
     if (!lastSenderTransaction) return true;
 
     const diff = createTransactionDto.datetime.getTime() - lastSenderTransaction.datetime.getTime();
-    return Math.abs(diff)/1000 > this.TWO_MINUTES_IN_SECONDS;
+    return Math.abs(diff) / 1000 > this.TWO_MINUTES_IN_SECONDS;
   }
 }

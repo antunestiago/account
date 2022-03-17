@@ -86,9 +86,9 @@ describe('TransactionService with duplicated transaction', () => {
     service = module.get<TransactionService>(TransactionServiceImpl);
   });
 
-  it('should return BadRequestException with Double transaction', () => {
+  it('should return BadRequestException with Double transaction', async () => {
     try {
-      service.transferFunds(createTransactionDto);
+      await service.transferFunds(createTransactionDto);
     } catch (e) {
       expect(e.status).toBe(HttpStatus.BAD_REQUEST);
       expect(e.message).toBe(ExceptionMessages.doubleTransaction);

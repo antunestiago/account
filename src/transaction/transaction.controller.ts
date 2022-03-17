@@ -11,8 +11,8 @@ export class TransactionController {
   ) {}
 
   @Post()
-  transferFunds(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionService.transferFunds(createTransactionDto);
+  async transferFunds(@Body() createTransactionDto: CreateTransactionDto) {
+    return await this.transactionService.transferFunds(createTransactionDto);
   }
 
 }
