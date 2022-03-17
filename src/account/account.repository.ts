@@ -9,7 +9,16 @@ export interface AccountRepository {
 }
 
 export class AccountRepositoryImpl implements AccountRepository {
-  accounts: Account[] = [];
+  accounts: Account[] = [{
+    name: 'Teste 1',
+    document: '000.000.000-00',
+    availableLimit: 1000,
+  },
+    {
+      name: 'Teste 2',
+      document: '000.000.000-01',
+      availableLimit: 200,
+    }];
 
   create(createAccountDto: CreateAccountDto): Promise<Account> {
     const account: Account = new Account();

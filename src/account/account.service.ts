@@ -7,7 +7,7 @@ import { BusinessRuleError } from "../../common/filters/operational-error.filter
 export interface AccountService {
   createAccount(createAccountDTO: CreateAccountDto): Promise<Account>;
   getAccount(document: string): Account;
-  transferFundsBetweenAccounts(originAccountDoc: string, destinationAccountDoc: string, amount: number);
+  transferFundsBetweenAccounts(originAccountDoc: string, destinationAccountDoc: string, amount: number): Account;
 }
 
 @Injectable()
@@ -48,6 +48,7 @@ export class AccountServiceImpl implements AccountService {
       this.accountRepository.updateAccount(sender);
       this.accountRepository.updateAccount(receiver);
     } catch (e) {
+      //
       throw e;
     }
 

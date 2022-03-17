@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransactionService, TransactionServiceImpl } from "./transaction.service";
 import { BadRequestException, HttpStatus } from "@nestjs/common";
-import { Account } from "../account/entities/account.entity";
-import { Transaction } from "./entities/transaction.entity";
-import { CreateTransactionDto } from "./dto/create-transaction.dto";
-import { ExceptionMessages } from "../../common/exception-messages.enum";
+import { Account } from "../../account/entities/account.entity";
+import { Transaction } from "../entities/transaction.entity";
+import { CreateTransactionDto } from "../dto/create-transaction.dto";
+import { ExceptionMessages } from "../../../common/exception-messages.enum";
 
 describe('TransactionService with one of accounts not found', () => {
   const createTransactionDto = new CreateTransactionDto();
