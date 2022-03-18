@@ -50,7 +50,7 @@ describe('TransactionService with one of accounts not found', () => {
 describe('TransactionService with duplicated transaction', () => {
   let service: TransactionService;
 
-  const createTransactionDto = new CreateTransactionDto();
+  const createTransactionDto = new CreateTransactionDto();boolean
   createTransactionDto.senderDocument = '000.000.000-01';
   createTransactionDto.receiverDocument = '000.000.000-02';
   createTransactionDto.value = 100;

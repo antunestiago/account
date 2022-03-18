@@ -9,3 +9,7 @@ export interface TransactionService {
 export interface TransactionSaveService {
   create(createTransactionDto: CreateTransactionDto, senderAccount: Account): Promise<Transaction>;
 }
+
+export interface TransactionValidationService {
+  transactionIsValid(createTransactionDto: CreateTransactionDto);
+}
