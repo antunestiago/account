@@ -1,25 +1,32 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { CreateAccountDto } from '../dto/create-account.dto';
 import { Account } from "../entities/account.entity";
-import { AccountRepository } from "../account.repository";
+import { AccountDAO, } from "../account.dao";
+import AccountBuilder from "../entities/account.builder";
+
 
 
 export interface AccountService {
   createAccount(createAccountDTO: CreateAccountDto): Promise<Account>;
-  getAccount(document: string): Account;
+  getAccount(document: string): Promise<Account>;
 }
 
 @Injectable()
 export class AccountServiceImpl implements AccountService {
   constructor(
-    @Inject('AccountRepository') private accountRepository: AccountRepository,
+    @Inject('AccountDAO') private accountDao: AccountDAO,
   ) {}
 
   async createAccount(createAccountDTO: CreateAccountDto): Promise<Account> {
     if (
-      !this.accountRepository.findAccountByDocument(createAccountDTO.document)
+      !await this.accountDao.findAccountByDocument(createAccountDTO.document)
     ) {
-      return this.accountRepository.create(createAccountDTO);
+      const Account = new AccountBuilder(createAccountDTO.document)
+        .setName(createAccountDTO.name)
+        .setAvailableLimit(createAccountDTO.availableLimit)
+        .build();
+
+      return await this.accountDao.save(Account);
     }
     return new Promise((resolve, reject) => {
       const error = new ConflictException(
@@ -30,7 +37,7 @@ export class AccountServiceImpl implements AccountService {
     });
   }
 
-  getAccount(document: string): Account {
-    return this.accountRepository.findAccountByDocument(document);
+  async getAccount(document: string): Promise<Account> {
+    return await this.accountDao.findAccountByDocument(document);
   };
 }

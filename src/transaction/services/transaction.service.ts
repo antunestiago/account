@@ -23,7 +23,7 @@ export class TransactionServiceImpl implements TransactionService {
     const result = await this.transactionValidationService.transactionIsValid(createTransactionDto);
     let senderAccount: Account;
     if (result) {
-      senderAccount = this.accountTransactionService.transferFundsBetweenAccounts(createTransactionDto.senderDocument,
+      senderAccount = await this.accountTransactionService.transferFundsBetweenAccounts(createTransactionDto.senderDocument,
         createTransactionDto.receiverDocument,
         createTransactionDto.value);
     }

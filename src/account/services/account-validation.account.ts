@@ -1,20 +1,19 @@
 import { AccountValidationService } from "../account.interface";
-import { BusinessRuleError } from "../../../common/filters/operational-error.filter";
 import { Inject } from "@nestjs/common";
-import { AccountRepository } from "../account.repository";
+import { AccountDAO } from "../account.dao";
 
 export class AccountValidationServiceImpl implements AccountValidationService {
   constructor(
-    @Inject('AccountRepository') private accountRepository: AccountRepository,
+    @Inject('AccountDAO') private accountDao: AccountDAO,
   ) {}
 
-  accountExists(document: string): boolean {
-    const sender = this.accountRepository.findAccountByDocument(document);
+  async accountExists(document: string): Promise<boolean> {
+    const sender = await this.accountDao.findAccountByDocument(document);
     return Boolean(sender);
   }
 
-  accountHasSufficientFunds(document: string, amount: number): boolean {
-    const sender = {...this.accountRepository.findAccountByDocument(document)};
+  async accountHasSufficientFunds(document: string, amount: number): Promise<boolean> {
+    const sender = await this.accountDao.findAccountByDocument(document);
     return sender.availableLimit >= amount;
   }
 

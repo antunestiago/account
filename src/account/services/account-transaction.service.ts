@@ -1,30 +1,35 @@
 import { AccountTransactionService } from "../account.interface";
 import { Inject } from "@nestjs/common";
-import { AccountRepository } from "../account.repository";
+
 import { Account } from "../entities/account.entity";
 import { BusinessRuleError } from "../../../common/filters/operational-error.filter";
+import { AccountDAO } from "../account.dao";
+import AccountBuilder from "../entities/account.builder";
+
 
 export class AccountTransactionServiceImpl implements AccountTransactionService{
   constructor(
-    @Inject('AccountRepository') private accountRepository: AccountRepository,
+    @Inject('AccountDAO') private accountDao: AccountDAO,
   ) {}
 
-  transferFundsBetweenAccounts(originAccountDoc: string, destinationAccountDoc: string, amount: number): Account {
-    const sender = {...this.accountRepository.findAccountByDocument(originAccountDoc)};
-    const receiver = {...this.accountRepository.findAccountByDocument(destinationAccountDoc)};
+  async transferFundsBetweenAccounts(originAccountDoc: string, destinationAccountDoc: string, amount: number): Promise<Account> {
+    const sender = await this.accountDao.findAccountByDocument(originAccountDoc);
+    const receiver = await this.accountDao.findAccountByDocument(destinationAccountDoc);
+
+    const newSender = new AccountBuilder(sender.document)
+      .setName(sender.name)
+      .setAvailableLimit(sender.availableLimit - amount).build();
+
+    const newReceiver = new AccountBuilder(receiver.document)
+      .setName(receiver.name)
+      .setAvailableLimit(receiver.availableLimit + amount).build();
 
     try {
-      sender.availableLimit = sender.availableLimit - amount;
-      receiver.availableLimit = receiver.availableLimit + amount;
-
-      this.accountRepository.updateAccount(sender);
-      this.accountRepository.updateAccount(receiver);
+      await this.accountDao.updateAccounts([newSender, newReceiver]);
     } catch (e) {
-      //
       throw e;
     }
-
-    return sender;
+   return newSender;
   }
 
 
