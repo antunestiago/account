@@ -1,4 +1,4 @@
-import { TransactionSaveService, TransactionValidationService } from "../transaction.interface";
+import { TransactionValidationService } from "../transaction.interface";
 import { CreateTransactionDto } from "../dto/create-transaction.dto";
 import { BadRequestException, Inject, NotFoundException } from "@nestjs/common";
 import { TransactionDAO } from "../transaction.dao";
@@ -8,7 +8,6 @@ import { BusinessRuleError } from "../../../common/filters/operational-error.fil
 
 export class TransactionValidationServiceImpl implements TransactionValidationService{
   constructor(
-    @Inject('TransactionSaveService') private transactionSaveService: TransactionSaveService,
     @Inject('AccountValidationService') private accountValidationService: AccountValidationService,
     @Inject('TransactionDAO') private transactionDAO: TransactionDAO,
   ) {}
@@ -22,10 +21,10 @@ export class TransactionValidationServiceImpl implements TransactionValidationSe
       throw new BadRequestException({ message: ExceptionMessages.doubleTransaction });
     }
 
-    const enoughFunds = this.accountValidationService.accountHasSufficientFunds(createTransactionDto.senderDocument,
+    const enoughFunds = await this.accountValidationService.accountHasSufficientFunds(createTransactionDto.senderDocument,
       createTransactionDto.value);
     if (!enoughFunds) {
-      throw new BusinessRuleError(["Insufficient funds."]);
+      throw new BusinessRuleError([ExceptionMessages.insufficientFunds]);
     }
     return true;
   }
