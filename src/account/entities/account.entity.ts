@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
-// import { AccountBuilder } from "./account.builder";
+
 
 @Entity()
 export class Account {
@@ -11,10 +11,4 @@ export class Account {
 
   @Column()
   availableLimit: number;
-
-  // constructor(builder: AccountBuilder) {
-  //   this.name = builder._name;
-  //   this.document = builder._document;
-  //   this.availableLimit = builder._availableLimit;
-  // }
 }

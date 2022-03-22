@@ -8,8 +8,8 @@ export class AccountValidationServiceImpl implements AccountValidationService {
   ) {}
 
   async accountExists(document: string): Promise<boolean> {
-    const sender = await this.accountDao.findAccountByDocument(document);
-    return Boolean(sender);
+    const account = await this.accountDao.findAccountByDocument(document);
+    return Boolean(account);
   }
 
   async accountHasSufficientFunds(document: string, amount: number): Promise<boolean> {

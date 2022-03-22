@@ -14,7 +14,7 @@ export class TransactionValidationServiceImpl implements TransactionValidationSe
   ) {}
 
   async transactionIsValid(createTransactionDto: CreateTransactionDto) {
-    if (!this.accountsExists(createTransactionDto)) {
+    if (!await this.accountsExists(createTransactionDto)) {
       throw new NotFoundException({ message: ExceptionMessages.noAccountFound })
     }
 
@@ -30,9 +30,9 @@ export class TransactionValidationServiceImpl implements TransactionValidationSe
     return true;
   }
 
-  private accountsExists(createTransactionDto: CreateTransactionDto): boolean {
-    const sender = this.accountValidationService.accountExists(createTransactionDto.senderDocument);
-    const receiver = this.accountValidationService.accountExists(createTransactionDto.receiverDocument);
+  private async accountsExists(createTransactionDto: CreateTransactionDto): Promise<boolean> {
+    const sender = await this.accountValidationService.accountExists(createTransactionDto.senderDocument);
+    const receiver = await this.accountValidationService.accountExists(createTransactionDto.receiverDocument);
     return Boolean(sender && receiver);
   }
 

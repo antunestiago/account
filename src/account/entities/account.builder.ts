@@ -21,12 +21,12 @@ export default class AccountBuilder {
     return this._availableLimit;
   }
 
-  setName(name: string) {
+  setName(name: string): AccountBuilder {
     this._name = name;
     return this;
   }
 
-  setAvailableLimit(limit: number) {
+  setAvailableLimit(limit: number): AccountBuilder {
     this._availableLimit = limit;
     return this;
   }

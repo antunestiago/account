@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TransactionService, TransactionServiceImpl } from "./transaction.service";
+import { TransactionServiceImpl } from "./transaction.service";
 import { BadRequestException, HttpStatus } from "@nestjs/common";
 import { Account } from "../../account/entities/account.entity";
 import { Transaction } from "../entities/transaction.entity";
 import { CreateTransactionDto } from "../dto/create-transaction.dto";
 import { ExceptionMessages } from "../../../common/exception-messages.enum";
+import { TransactionService } from "../transaction.interface";
 
 describe('TransactionService with one of accounts not found', () => {
   const createTransactionDto = new CreateTransactionDto();
@@ -21,7 +22,7 @@ describe('TransactionService with one of accounts not found', () => {
         TransactionServiceImpl,
       ],
     }) .useMocker((token) => {
-      if (token === 'AccountService') {
+      if (token === 'AccountValidationService') {
         return {
           getAccount: jest.fn().mockReturnValue(undefined)
         };
@@ -50,7 +51,7 @@ describe('TransactionService with one of accounts not found', () => {
 describe('TransactionService with duplicated transaction', () => {
   let service: TransactionService;
 
-  const createTransactionDto = new CreateTransactionDto();boolean
+  const createTransactionDto = new CreateTransactionDto();
   createTransactionDto.senderDocument = '000.000.000-01';
   createTransactionDto.receiverDocument = '000.000.000-02';
   createTransactionDto.value = 100;
