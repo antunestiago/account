@@ -12,7 +12,7 @@ export class TransactionValidationServiceImpl implements TransactionValidationSe
     @Inject('TransactionDAO') private transactionDAO: TransactionDAO,
   ) {}
 
-  async transactionIsValid(createTransactionDto: CreateTransactionDto) {
+  async transactionIsValid(createTransactionDto: CreateTransactionDto): Promise<boolean> {
     if (!await this.accountsExists(createTransactionDto)) {
       throw new NotFoundException({ message: ExceptionMessages.noAccountFound })
     }

@@ -11,5 +11,5 @@ export interface TransactionSaveService {
 }
 
 export interface TransactionValidationService {
-  transactionIsValid(createTransactionDto: CreateTransactionDto);
+  transactionIsValid(createTransactionDto: CreateTransactionDto): Promise<boolean>;
 }
