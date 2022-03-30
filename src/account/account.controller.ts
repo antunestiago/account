@@ -1,9 +1,9 @@
 import { Controller, Inject, PreconditionFailedException } from "@nestjs/common";
-import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { validate } from "class-validator";
 import { Account } from './entities/account.entity';
+import { AccountService } from "./services/account.service";
 
 @Controller('account')
 export class AccountController {

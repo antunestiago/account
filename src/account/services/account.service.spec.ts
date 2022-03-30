@@ -1,24 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AccountService, AccountServiceImpl } from "./account.service";
-import { EventEmitter2 } from "@nestjs/event-emitter";
-import { Account } from "./entities/account.entity";
+
 import { HttpStatus } from "@nestjs/common";
-import { response } from "express";
+import { Account } from "../entities/account.entity";
+import AccountBuilder from "../entities/account.builder";
 
 describe('AccountService', () => {
   let service: AccountServiceImpl;
 
-  const fakeAccount = new Account();
-  fakeAccount.name = 'Thomas';
-  fakeAccount.document = '000.000.000-11';
-  fakeAccount.availableLimit = 0;
+  const fakeAccount = new AccountBuilder('000.000.000-01')
+    .setName('Ronald')
+    .setAvailableLimit(100)
+    .build();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [AccountServiceImpl],
     })
       .useMocker((token) => {
-        if (token === 'AccountRepository') {
+        if (token === 'AccountDAO') {
           return {
             findAccountByDocument: jest.fn().mockResolvedValue(fakeAccount),
             create: jest.fn().mockResolvedValue(fakeAccount),
